@@ -1,11 +1,20 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
 
 export default function PrivateRoute({ children, ...routeProps }) {
-  const isLoggedIn = false;
-  const user = isLoggedIn ? { id: 1, email: 'alan@email.com' } : null;
+  const { user } = useUser();
 
   return (
-    <Route {...routeProps}>{user ? children : <Redirect to="/login" />}</Route>
+    <Route
+      {...routeProps}
+      render={({ location }) =>
+        user.email ? (
+          children
+        ) : (
+          <Redirect to={{ pathname: '/login', state: { from: location } }} />
+        )
+      }
+    />
   );
 }
